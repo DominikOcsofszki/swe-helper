@@ -1,4 +1,4 @@
-FROM homebrew/brew:4.5.2 AS brew
+FROM homebrew/brew:4.5.2 AS agent-helper
 
 WORKDIR /app
 
@@ -22,6 +22,11 @@ COPY trajectories trajectories
 COPY config config
 RUN uvx --env-file env.docker sweagent-1.1.0-py3-none-any.whl -h
 
+# ============================================================
+FROM agent-helper
+
+COPY problems problems
+COPY run_local.sh run_local.sh
 
 
 ENTRYPOINT ["tail","-f","/dev/null"]
