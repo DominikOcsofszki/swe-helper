@@ -2,7 +2,7 @@ FROM homebrew/brew:4.5.2 AS brew
 
 WORKDIR /app
 
-ENV HOME_DIR /home/linuxbrew
+ENV HOME_DIR=/home/linuxbrew
 RUN brew update
 RUN brew upgrade
 
@@ -14,14 +14,13 @@ RUN nvim -c "qa"
 RUN nvim -c "qa"
 # ENV PATH="/home/linuxbrew/.local/bin:${PATH}"
 
+COPY sweagent-1.1.0-py3-none-any.whl sweagent-1.1.0-py3-none-any.whl
+RUN echo 'alias sweagent="uvx --env-file env.docker sweagent-1.1.0-py3-none-any.whl"' >> $HOME_DIR/.bashrc
+COPY env.docker env.docker
 COPY tools tools
 COPY trajectories trajectories
-COPY sweagent-1.1.0-py3-none-any.whl sweagent-1.1.0-py3-none-any.whl
-
-COPY env.docker env.docker
 COPY config config
-RUN echo 'alias sweagent="uvx --env-file env.docker sweagent-1.1.0-py3-none-any.whl"' >> $HOME_DIR/.bashrc
-RUN sweagent
+RUN uvx --env-file env.docker sweagent-1.1.0-py3-none-any.whl -h
 
 
 
